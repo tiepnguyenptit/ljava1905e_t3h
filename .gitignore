@@ -29,5 +29,4 @@ HELP.md
 ### VS Code ###
 .vscode/
 bin/
-src/main/resources/application.properties
 log/
