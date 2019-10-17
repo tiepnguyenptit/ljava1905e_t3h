@@ -4,7 +4,6 @@ package application.data.model;
 import javax.persistence.*;
 import java.util.Date;
 
-
 @Entity(name = "dbo_product")
 public class Product {
 
@@ -12,6 +11,13 @@ public class Product {
     @Column(name = "product_id")
     @Id
     private int id;
+
+    @Column(name = "category_id", insertable = false, updatable = false)
+    private int categoryId;
+
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(name = "name")
     private String name;
@@ -34,6 +40,22 @@ public class Product {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getName() {
