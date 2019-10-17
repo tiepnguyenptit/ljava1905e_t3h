@@ -97,4 +97,18 @@ public class Product {
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", categoryId=" + categoryId +
+                ", category=" + category +
+                ", name='" + name + '\'' +
+                ", shortDesc='" + shortDesc + '\'' +
+                ", mainImage='" + mainImage + '\'' +
+                ", price=" + price +
+                ", createdDate=" + createdDate +
+                '}';
+    }
 }
