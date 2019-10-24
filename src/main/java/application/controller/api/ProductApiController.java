@@ -114,4 +114,27 @@ public class ProductApiController {
     }
 
 
+    @PostMapping(value = "/create")
+    public BaseApiResult createProduct(@RequestBody ProductDTO dto){
+        DataApiResult result = new DataApiResult();
+
+        try {
+            Product product = new Product();
+            product.setName(dto.getName());
+            product.setShortDesc(dto.getShortDesc());
+            product.setPrice(dto.getPrice());
+            product.setMainImage(dto.getMainImage());
+            product.setCategory(categoryService.findOne(dto.getCategoryId()));
+            product.setCreatedDate(new Date());
+            productService.addNewProduct(product);
+            result.setData(product.getId());
+            result.setMessage("Save product successfully: " + product.getId());
+            result.setSuccess(true);
+        } catch (Exception e) {
+            result.setSuccess(false);
+            result.setMessage(e.getMessage());
+        }
+        return result;
+    }
+
 }

@@ -2,6 +2,7 @@ package application.model.dto;
 
 import application.extension.CustomDateDeserializer;
 import application.extension.CustomDateSerializer;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 public class ProductDTO {
 
     private int id;
+//    @JsonProperty("category")
     private int categoryId;
     private String name;
     private String shortDesc;
