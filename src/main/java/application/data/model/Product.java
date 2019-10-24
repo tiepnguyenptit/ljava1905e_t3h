@@ -2,7 +2,9 @@ package application.data.model;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "dbo_product")
 public class Product {
@@ -18,6 +20,9 @@ public class Product {
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    private List<ProductImage> productImageList = new ArrayList<>();
 
     @Column(name = "name")
     private String name;
@@ -82,6 +87,14 @@ public class Product {
         this.mainImage = mainImage;
     }
 
+    public List<ProductImage> getProductImageList() {
+        return productImageList;
+    }
+
+    public void setProductImageList(List<ProductImage> productImageList) {
+        this.productImageList = productImageList;
+    }
+
     public Double getPrice() {
         return price;
     }
@@ -96,19 +109,5 @@ public class Product {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", categoryId=" + categoryId +
-                ", category=" + category +
-                ", name='" + name + '\'' +
-                ", shortDesc='" + shortDesc + '\'' +
-                ", mainImage='" + mainImage + '\'' +
-                ", price=" + price +
-                ", createdDate=" + createdDate +
-                '}';
     }
 }
