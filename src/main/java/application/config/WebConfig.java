@@ -21,8 +21,6 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 public class WebConfig extends WebMvcConfigurerAdapter {
 
 
-
-
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private ThymeleafProperties properties;

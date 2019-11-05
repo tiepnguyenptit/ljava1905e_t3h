@@ -28,7 +28,7 @@ import java.util.List;
 
 
 @Controller
-public class HomeController{
+public class HomeController extends BaseController {
 
     @Autowired
     private CategoryService categoryService;
@@ -38,10 +38,13 @@ public class HomeController{
 
     @GetMapping(value = "")
     public String home(Model model,
+                       @Valid @ModelAttribute("productname") ProductVM productName,
                        @RequestParam(name = "categoryId", required = false) Integer categoryId,
                        @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
                        @RequestParam(name = "size", required = false, defaultValue = "12") Integer size,
                        @RequestParam(name = "sortByPrice", required = false) String sort) {
+
+
 
         HomeLandingVM vm = new HomeLandingVM();
 
@@ -84,8 +87,18 @@ public class HomeController{
 
         Pageable pageable = new PageRequest(page, size, sortable);
 
-        Page<Product> productPage = productService.getPage(pageable);
+        Page<Product> productPage = null;
 
+        if(categoryId != null) {
+            productPage = productService.getListProductByCategoryOrProductNameContaining(pageable,categoryId,null);
+            Category category = categoryService.findOne(categoryId);
+            vm.setKeyWord(category.getName());
+        } else if (productName.getName() != null && !productName.getName().isEmpty()) {
+            productPage = productService.getListProductByCategoryOrProductNameContaining(pageable,null,productName.getName().trim());
+            vm.setKeyWord("Find with key: " + productName.getName());
+        } else {
+            productPage = productService.getListProductByCategoryOrProductNameContaining(pageable,null,null);
+        }
 
         List<ProductVM> productVMList = new ArrayList<>();
 
@@ -112,6 +125,7 @@ public class HomeController{
          */
 
         vm.setListBanners(listBanners);
+        vm.setLayoutHeaderVM(this.getLayoutHeaderVM());
         vm.setCategoryVMList(categoryVMList);
         vm.setProductVMList(productVMList);
         if(productVMList.size() == 0) {
