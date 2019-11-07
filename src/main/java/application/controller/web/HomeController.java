@@ -44,6 +44,9 @@ public class HomeController extends BaseController {
                        @RequestParam(name = "size", required = false, defaultValue = "12") Integer size,
                        @RequestParam(name = "sortByPrice", required = false) String sort) {
 
+        /**
+         * check cookie to create cart guid
+         */
 
 
         HomeLandingVM vm = new HomeLandingVM();

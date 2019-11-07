@@ -32,7 +32,38 @@ public class ProductController extends BaseController {
     public String productDetail(@PathVariable Integer productId, Model model,
                                 @Valid @ModelAttribute("productname") ProductVM productName) {
 
-        
+        ProductDetailVM vm = new ProductDetailVM();
+
+        Product productEntity = productService.findOne(productId);
+        ProductVM productVM = new ProductVM();
+
+        if(productEntity!=null) {
+            productVM.setId(productEntity.getId());
+            productVM.setName(productEntity.getName());
+            productVM.setMainImage(productEntity.getMainImage());
+            productVM.setShortDesc(productEntity.getShortDesc());
+            productVM.setPrice(productEntity.getPrice());
+
+            /**
+             * set list product image vm
+             */
+            List<ProductImageVM> productImageVMS = new ArrayList<>();
+            for(ProductImage productImage : productEntity.getProductImageList()) {
+                ProductImageVM productImageVM = new ProductImageVM();
+                productImageVM.setLink(productImage.getLink());
+
+                productImageVMS.add(productImageVM);
+            }
+
+            productVM.setProductImageVMS(productImageVMS);
+        }
+
+
+        vm.setLayoutHeaderVM(this.getLayoutHeaderVM());
+        vm.setProductVM(productVM);
+
+        model.addAttribute("vm",vm);
+
         return "/product-detail";
     }
 
