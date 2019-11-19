@@ -24,7 +24,7 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private List<ProductImage> productImageList = new ArrayList<>();
 
-    @Column(name = "name")
+
     private String name;
 
     @Column(name = "short_desc")

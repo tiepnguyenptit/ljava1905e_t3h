@@ -11,7 +11,7 @@ import java.util.Date;
 public class ProductDTO {
 
     private int id;
-//    @JsonProperty("category")
+//    @JsonProperty("categoryId")
     private int categoryId;
     private String name;
     private String shortDesc;
