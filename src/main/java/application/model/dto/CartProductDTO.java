@@ -1,5 +1,7 @@
 package application.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CartProductDTO {
 
     private int id;
