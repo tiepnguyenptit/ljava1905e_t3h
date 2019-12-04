@@ -3,14 +3,13 @@ package application.controller.web;
 
 import application.data.model.Category;
 import application.data.model.Product;
+import application.data.model.ProductImage;
 import application.data.service.CategoryService;
 import application.data.service.ProductService;
-import application.model.viewmodel.admin.AdminCategoryVM;
-import application.model.viewmodel.admin.AdminProductVM;
-import application.model.viewmodel.admin.ChartVM;
-import application.model.viewmodel.admin.HomeAdminVM;
+import application.model.viewmodel.admin.*;
 import application.model.viewmodel.common.CategoryVM;
 import application.model.viewmodel.common.ChartDataVM;
+import application.model.viewmodel.common.ProductImageVM;
 import application.model.viewmodel.common.ProductVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -184,71 +183,30 @@ public class AdminController extends BaseController {
     }
 
     @GetMapping("/product-image/{productId}")
-    public String product(Model model,
-                          @PathVariable int productId,
-                          @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-                          @RequestParam(name = "size", required = false, defaultValue = "8") Integer size
-    ) {
-        AdminProductVM vm = new AdminProductVM();
+    public String product(Model model, @PathVariable int productId) {
+        AdminProductImageVM vm = new AdminProductImageVM();
+
+        Product productEntity = productService.findOne(productId);
 
 
-        /**
-         * set list categoryVM
-         */
-        List<Category> categoryList = categoryService.getListAllCategories();
-        List<CategoryVM> categoryVMList = new ArrayList<>();
+        List<ProductImageVM> productImageVMS = new ArrayList<>();
 
-        for (Category category : categoryList) {
-            CategoryVM categoryVM = new CategoryVM();
-            categoryVM.setId(category.getId());
-            categoryVM.setName(category.getName());
-            categoryVMList.add(categoryVM);
-        }
-
-
-        Pageable pageable = new PageRequest(page, size);
-
-        Page<Product> productPage = null;
-
-        if (productName.getName() != null && !productName.getName().isEmpty()) {
-            productPage = productService.getListProductByCategoryOrProductNameContaining(pageable, null, productName.getName().trim());
-            vm.setKeyWord("Find with key: " + productName.getName());
-        } else {
-            productPage = productService.getListProductByCategoryOrProductNameContaining(pageable, null, null);
-        }
-
-
-        List<ProductVM> productVMList = new ArrayList<>();
-
-        for (Product product : productPage.getContent()) {
-            ProductVM productVM = new ProductVM();
-            if (product.getCategory() == null) {
-                productVM.setCategoryName("Unknown");
-            } else {
-                productVM.setCategoryName(product.getCategory().getName());
-            }
-            productVM.setId(product.getId());
-            productVM.setName(product.getName());
-            productVM.setMainImage(product.getMainImage());
-            productVM.setPrice(product.getPrice());
-            productVM.setShortDesc(product.getShortDesc());
-            productVM.setCreatedDate(product.getCreatedDate());
-
-            productVMList.add(productVM);
+        for (ProductImage productImage : productEntity.getProductImageList()) {
+            ProductImageVM productImageVM = new ProductImageVM();
+            productImageVM.setId(productImage.getId());
+            productImageVM.setLink(productImage.getLink());
+            productImageVM.setCreatedDate(productImage.getCreatedDate());
+            productImageVMS.add(productImageVM);
         }
 
         vm.setLayoutHeaderAdminVM(this.getLayoutHeaderAdminVM());
-        vm.setCategoryVMList(categoryVMList);
-        vm.setProductVMList(productVMList);
-        if (productVMList.size() == 0) {
-            vm.setKeyWord("Not found any product");
-        }
+        vm.setProductImageVMS(productImageVMS);
+        vm.setProductId(productId);
 
 
         model.addAttribute("vm", vm);
-        model.addAttribute("page", productPage);
 
-        return "/admin/product";
+        return "/admin/product-image";
     }
 
 }
