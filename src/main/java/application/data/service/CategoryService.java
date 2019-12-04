@@ -4,6 +4,8 @@ import application.data.model.Category;
 import application.data.repository.CategoryRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -58,4 +60,7 @@ public class CategoryService {
         return categoryRepository.getTotalCategories();
     }
 
+    public Page<Category> getListCategoryByCategoryNameContaining(Pageable pageable, String categoryName){
+        return categoryRepository.getListCategoryByCategoryNameContaining(pageable,categoryName);
+    }
 }

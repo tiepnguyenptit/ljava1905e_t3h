@@ -5,6 +5,7 @@ import application.data.model.Category;
 import application.data.model.Product;
 import application.data.service.CategoryService;
 import application.data.service.ProductService;
+import application.model.viewmodel.admin.AdminCategoryVM;
 import application.model.viewmodel.admin.AdminProductVM;
 import application.model.viewmodel.admin.ChartVM;
 import application.model.viewmodel.admin.HomeAdminVM;
@@ -116,6 +117,52 @@ public class AdminController extends BaseController {
         return "/admin/product";
     }
 
+
+    @GetMapping("/category")
+    public String category(Model model,
+                          @Valid @ModelAttribute("categoryname") CategoryVM categoryName,
+                          @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                          @RequestParam(name = "size", required = false, defaultValue = "8") Integer size
+    ) {
+        AdminCategoryVM vm = new AdminCategoryVM();
+
+
+        Pageable pageable = new PageRequest(page, size);
+
+        Page<Category> categoryPage =  null;
+
+
+        if (categoryName.getName() != null && !categoryName.getName().isEmpty()) {
+            categoryPage = categoryService.getListCategoryByCategoryNameContaining(pageable, categoryName.getName().trim());
+            vm.setKeyWord("Find with key: " + categoryName.getName());
+        } else categoryPage = categoryService.getListCategoryByCategoryNameContaining(pageable, null);
+
+
+        List<CategoryVM> categoryVMList = new ArrayList<>();
+
+        for (Category category : categoryPage.getContent()) {
+            CategoryVM categoryVM = new CategoryVM();
+
+            categoryVM.setId(category.getId());
+            categoryVM.setName(category.getName());
+            categoryVM.setShortDesc(category.getShortDesc());
+            categoryVM.setCreatedDate(category.getCreatedDate());
+
+            categoryVMList.add(categoryVM);
+        }
+
+        vm.setLayoutHeaderAdminVM(this.getLayoutHeaderAdminVM());
+        vm.setCategoryVMList(categoryVMList);
+        if (categoryVMList.size() == 0) {
+            vm.setKeyWord("Not found any category");
+        }
+
+
+        model.addAttribute("vm", vm);
+        model.addAttribute("page", categoryPage);
+
+        return "/admin/category";
+    }
 
     @GetMapping("/chart")
     public String chart(Model model) {
